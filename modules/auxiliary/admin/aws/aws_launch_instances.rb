@@ -34,8 +34,6 @@ class MetasploitModule < Msf::Auxiliary
         OptString.new("AMI_ID", [true, 'The Amazon Machine Image (AMI) ID', 'ami-1e299d7e']),
         OptString.new("KEY_NAME", [true, 'The SSH key to be used for ec2-user', 'admin']),
         OptString.new("SSH_PUB_KEY", [false, 'The public SSH key to be used for ec2-user, e.g., "ssh-rsa ABCDE..."', '']),
-        OptBool.new('CREATE_SEC_GROUP', [true, 'Will create a security group if set', true]),
-        OptString.new('PROFILE_NAME', [false, 'The instance profile/role name', '']),
         OptString.new("USERDATA_FILE", [false, 'The script that will be executed on start', ''])
       ]
     )
@@ -44,7 +42,9 @@ class MetasploitModule < Msf::Auxiliary
         OptString.new('RPORT', [true, 'AWS EC2 Endpoint TCP Port', 443]),
         OptBool.new('SSL', [true, 'AWS EC2 Endpoint SSL', true]),
         OptString.new('INSTANCE_TYPE', [true, 'The instance type', 'm3.medium']),
+        OptString.new('PROFILE_NAME', [false, 'The instance profile/role name', '']),
         OptString.new('VPC_ID', [false, 'The EC2 VPC ID', '']),
+        OptString.new('SUBNET_ID', [false, 'The public subnet to use', '']),
         OptString.new('SEC_GROUP_ID', [false, 'The EC2 security group to use', '']),
         OptString.new('SEC_GROUP_CIDR', [true, 'EC2 security group network access CIDR', '0.0.0.0/0']),
         OptString.new('SEC_GROUP_PORT', [true, 'EC2 security group network access PORT', 'tcp:22']),
@@ -70,8 +70,8 @@ class MetasploitModule < Msf::Auxiliary
 
     create_keypair(creds) unless datastore['SSH_PUB_KEY'].blank?
     vpc = datastore['VPC_ID'].blank? ? vpc(creds) : datastore['VPC_ID']
-    sg = create_sg(creds, vpc)
-    subnet = pub_subnet(creds, vpc)
+    sg = datastore['SEC_GROUP_ID'].blank? ? create_sg(creds, vpc) : datastore['SEC_GROUP_ID']
+    subnet = datastore['SUBNET_ID'].blank? ? pub_subnet(creds, vpc) : datastore['SUBNET_ID']
     instance_id = launch_instance(creds, subnet, sg)
     action = 'DescribeInstances'
     doc = call_ec2(creds, 'Action' => action, 'InstanceId.1' => instance_id)
