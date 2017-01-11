@@ -72,6 +72,10 @@ class MetasploitModule < Msf::Auxiliary
     vpc = datastore['VPC_ID'].blank? ? vpc(creds) : datastore['VPC_ID']
     sg = datastore['SEC_GROUP_ID'].blank? ? create_sg(creds, vpc) : datastore['SEC_GROUP_ID']
     subnet = datastore['SUBNET_ID'].blank? ? pub_subnet(creds, vpc) : datastore['SUBNET_ID']
+    unless subnet
+      print_error("Could not find a public subnet, please provide one")
+      return
+    end
     instance_id = launch_instance(creds, subnet, sg)
     action = 'DescribeInstances'
     doc = call_ec2(creds, 'Action' => action, 'InstanceId.1' => instance_id)
@@ -119,7 +123,7 @@ class MetasploitModule < Msf::Auxiliary
     print_status("Launched instance #{instance_id} in #{datastore['Region']} account #{doc['ownerId']}")
     action = 'DescribeInstanceStatus'
     loop do
-      sleep(10)
+      sleep(15)
       doc = call_ec2(creds, 'Action' => action, 'InstanceId' => instance_id)
       doc = print_results(doc, action)
       if doc ['instanceStatusSet'].nil?
@@ -182,7 +186,6 @@ class MetasploitModule < Msf::Auxiliary
         end
       end
     end
-    print_error("Could not find a public subnet, please provide one")
     nil
   end
 
