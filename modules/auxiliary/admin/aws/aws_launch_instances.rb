@@ -180,7 +180,7 @@ class MetasploitModule < Msf::Auxiliary
         end
       else
         route_table['routeSet']['item'].each do |route|
-          if route['gatewayId'].start_with?('igw-')
+          if route['gatewayId'] && route['gatewayId'].start_with?('igw-')
             return route_table['associationSet']['item'].first['subnetId']
           end
         end
