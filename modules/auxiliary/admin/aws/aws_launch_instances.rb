@@ -119,7 +119,12 @@ class MetasploitModule < Msf::Auxiliary
     doc = call_ec2(creds, opts(action, subnet, sg))
     doc = print_results(doc, action)
     return if doc.nil?
-    instance_id = doc['instancesSet']['item']['instanceId']
+    # TODO: account for multiple instances
+    if doc['instancesSet']['item'].instance_of?(Array)
+      instance_id = doc['instancesSet']['item'].first['instanceId']
+    else
+      instance_id = doc['instancesSet']['item']['instanceId']
+    end
     print_status("Launched instance #{instance_id} in #{datastore['Region']} account #{doc['ownerId']}")
     action = 'DescribeInstanceStatus'
     loop do
