@@ -42,7 +42,7 @@ class MetasploitModule < Msf::Auxiliary
         OptString.new('RPORT', [true, 'AWS EC2 Endpoint TCP Port', 443]),
         OptBool.new('SSL', [true, 'AWS EC2 Endpoint SSL', true]),
         OptString.new('INSTANCE_TYPE', [true, 'The instance type', 'm3.medium']),
-        OptString.new('PROFILE_NAME', [false, 'The instance profile/role name', '']),
+        OptString.new('ROLE_NAME', [false, 'The instance profile/role name', '']),
         OptString.new('VPC_ID', [false, 'The EC2 VPC ID', '']),
         OptString.new('SUBNET_ID', [false, 'The public subnet to use', '']),
         OptString.new('SEC_GROUP_ID', [false, 'The EC2 security group to use', '']),
