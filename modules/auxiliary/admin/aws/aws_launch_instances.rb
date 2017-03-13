@@ -21,6 +21,10 @@ class MetasploitModule < Msf::Auxiliary
         'License'        => MSF_LICENSE,
         'Author'         => [
           'Javier Godinez <godinezj[at]gmail.com>',
+        ],
+        'References'     => [
+          [ 'URL', 'https://drive.google.com/open?id=0B2Ka7F_6TetSNFdfbkI1cnJHUTQ'],
+          [ 'URL', 'https://published-prd.lanyonevents.com/published/rsaus17/sessionsFiles/4721/IDY-W10-DevSecOps-on-the-Offense-Automating-Amazon-Web-Services-Account-Takeover.pdf' ]
         ]
       )
     )

@@ -26,6 +26,7 @@ ports. Security-groups provide much of the functionality of traditional firewall
 and can be configured by specifyig a protocol, a CIDR and a port. 
 
 ## How it Works
+
 The module performs several tasks to launch a host with a public IP address,
 these are as follow: 1) select a VPC, 2) select a subnet, 3) create/select a
 security group, 4) create/select a key-pair, and 5) launch a host.
@@ -62,11 +63,6 @@ instance using an existing key-pair denoted by `KEY_NAME`. To set the
 the module launches the host via the AWS API specifying that it should
 associate a public IP address.
 
-When the host has passed its primary system checks, the IP address will be
-displayed. We can use this IP address to SSH to the host. Please note that
-most users will want to set the `SEC_GROUP_CIDR` option to restrict access to
-our new Cloud host.
-
 ## Options
 
 The Launch Instances module is an auxiliary module that can be loaded using the
@@ -99,8 +95,6 @@ Advanced Options:
 * `SUBNET_ID`: The public subnet to use
 * `UserAgent`: The User-Agent header to use for all requests
 * `VPC_ID`: The EC2 VPC ID
-
-
 
 # Usage
 
@@ -149,3 +143,24 @@ msf auxiliary(aws_launch_instances) > run
 [*] Auxiliary module execution completed 
 ```
 
+When the host has passed its primary system checks, the IP address will be
+displayed. We can use this IP address to SSH to the host. Please note that
+most users will want to set the `SEC_GROUP_CIDR` option to restrict access to
+our new Cloud host.
+
+To SSH into the host, you must specify the SSH key, and ec2-user username, e.g.,
+
+```
+$ ssh -i ec2-user-key ec2-user@54.186.158.6
+The authenticity of host '54.186.158.6 (54.186.158.6)' can't be established.
+ECDSA key fingerprint is SHA256:ePj6WtCeK...
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '54.186.158.6' (ECDSA) to the list of known hosts.
+       __|  __|_  )
+       _|  (     /   Amazon Linux AMI
+      ___|\___|___|
+https://aws.amazon.com/amazon-linux-ami/2016.09-release-notes/
+5 package(s) needed for security, out of 9 available
+Run "sudo yum update" to apply all updates.
+[ec2-user@ip-172-31-8-176 ~]$
+```
